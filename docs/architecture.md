@@ -153,7 +153,7 @@ Compose 常驻 **web、api、worker、postgres、redis** 五个服务；sandbox 
 
 多 Agent 调度、可视化编排、插件市场、完整 IDE、Kubernetes 和独立向量数据库暂缓；有实际 RAG 需求时先评估 pgvector。
 
-**后续工程落点：** `backend/pom.xml`；`backend/src/main/java/dev/aion/{access,workspace,session,run,agent,tool}`；`backend/src/main/resources/db/migration/`；`frontend/src/features/{workspace,chat,artifacts,settings}`；`frontend/src/styles/globals.css`；`deploy/compose.yaml`；`docs/architecture.md`。当前无业务代码可复用，以上为拟建路径。
+**后续工程落点：** 后端 Maven 工程直接位于 Aion 根目录，不创建 `backend/`：`pom.xml`；`src/main/java/dev/aion/{access,workspace,session,run,agent,tool}`；`src/main/resources/db/migration/`；`frontend/src/features/{workspace,chat,artifacts,settings}`；`frontend/src/styles/globals.css`；`deploy/compose.yaml`；`docs/architecture.md`。当前无业务代码可复用，以上为拟建路径。
 
 **必须验收：** 在工具成功而结果未保存时杀掉 Worker；旧租约不能推进状态；两个任务不能写同一目录；路径/符号链接越界、凭据读取和未授权网络访问被拒绝；取消后进程停止。界面覆盖 1440/1024/390px、深浅主题、键盘操作、长输出和审批卡片。
 
