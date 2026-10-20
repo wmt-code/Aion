@@ -46,14 +46,14 @@ Flyway 在两种角色启动时自动执行，使用 `aion` schema 和自身的�
 
 ## 容器启动
 
-先完成 `mvn verify`，再构建包含可执行 JAR 的运行镜像：
+先完成 `mvn verify`，生成固定名称的 `target/aion.jar`，再构建运行镜像：
 
 ```powershell
 $env:AION_DATABASE_PASSWORD = 'local-development-only'
 docker compose -f deploy/compose.yaml --profile app up -d --build --wait
 ```
 
-API 和 Worker 使用同一镜像、非 root 用户，无 Docker socket 挂载。此 Compose 用于本地开发，尚未包含前端、TLS 入口、sandbox 或生产环境密钥管理。Worker 容器运行不代表已具备任务消费能力。
+API 和 Worker 使用同一镜像、非 root 用户，无 Docker socket 挂载。API 容器通过 readiness 接口检查就绪，两种角色均预留 40 秒停止宽限期。Redis 健康检查失败不阻止应用启动，但 `--wait` 仍会报告整个 Compose 项目中的 Redis 不健康。此 Compose 用于本地开发，尚未包含前端、TLS 入口、sandbox 或生产环境密钥管理。Worker 容器运行不代表已具备任务消费能力。
 
 ```powershell
 docker compose -f deploy/compose.yaml --profile app down

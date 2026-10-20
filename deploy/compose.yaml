@@ -33,6 +33,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
     image: aion:local
+    stop_grace_period: 40s
     environment:
       SPRING_PROFILES_ACTIVE: api
       AION_DATABASE_URL: jdbc:postgresql://postgres:5432/aion
@@ -41,11 +42,17 @@ services:
       AION_REDIS_HOST: redis
     ports:
       - "127.0.0.1:${AION_API_PORT:-8080}:8080"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8080/actuator/health/readiness"]
+      interval: 5s
+      timeout: 5s
+      start_period: 30s
+      retries: 10
     depends_on:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_healthy
+        condition: service_started
 
   worker:
     profiles: [app]
@@ -53,6 +60,7 @@ services:
       context: ..
       dockerfile: deploy/Dockerfile
     image: aion:local
+    stop_grace_period: 40s
     environment:
       SPRING_PROFILES_ACTIVE: worker
       AION_DATABASE_URL: jdbc:postgresql://postgres:5432/aion
@@ -63,7 +71,7 @@ services:
       postgres:
         condition: service_healthy
       redis:
-        condition: service_healthy
+        condition: service_started
 
 volumes:
   postgres-data:

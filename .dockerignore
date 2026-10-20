@@ -2,4 +2,4 @@
 !deploy/
 !deploy/Dockerfile
 !target/
-!target/aion-*.jar
+!target/aion.jar

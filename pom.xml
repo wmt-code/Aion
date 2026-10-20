@@ -83,6 +83,7 @@
     </dependencies>
 
     <build>
+        <finalName>aion</finalName>
         <plugins>
             <!-- 打包可执行后端应用 -->
             <plugin>
