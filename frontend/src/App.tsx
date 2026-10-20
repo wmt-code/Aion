@@ -40,7 +40,10 @@ export default function App() {
       <aside className="desktop-navigation" id="desktop-navigation"><Navigation /></aside>
       <dialog className="navigation-drawer" ref={drawer} aria-label="会话导航抽屉">
         <Button variant="ghost" size="icon" className="drawer-close" aria-label="关闭导航" onClick={() => drawer.current?.close()}><X /></Button>
-        <Navigation onNavigate={() => drawer.current?.close()} />
+        <Navigation onNavigate={() => {
+          drawer.current?.close()
+          setShowArtifacts(false)
+        }} />
       </dialog>
       <div className="workspace-shell">
         <header className="workspace-header">

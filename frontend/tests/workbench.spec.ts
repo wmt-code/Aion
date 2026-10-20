@@ -56,7 +56,8 @@ test('通用任务画布支持按需审阅、键盘访问和草稿保留', async
   await page.screenshot({ path: testInfo.outputPath('workbench.png'), fullPage: true })
 })
 
-test('短视口和长任务仍可操作', async ({ page }) => {
+test('短视口和长任务仍可操作', async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.startsWith('mobile-'), '固定手机视口仅在移动端项目运行')
   await page.setViewportSize({ width: 390, height: 480 })
   await page.emulateMedia({ reducedMotion: 'reduce', contrast: 'more' })
   await page.goto('/')
@@ -71,4 +72,33 @@ test('短视口和长任务仍可操作', async ({ page }) => {
   await page.getByRole('button', { name: '展开产物面板' }).click()
   await page.getByRole('button', { name: '返回任务' }).click()
   await expect(draft).toHaveValue(content)
+})
+
+test('深色增加对比度使用高对比文字和边界', async ({ page }, testInfo) => {
+  test.skip(testInfo.project.use.colorScheme !== 'dark', '仅验证深色主题的覆盖规则')
+  await page.emulateMedia({ colorScheme: 'dark', contrast: 'more' })
+  await page.goto('/')
+  const colors = await page.locator('.composer').evaluate((element) => {
+    const style = getComputedStyle(element)
+    const select = element.querySelector('select')
+    if (!select) throw new Error('缺少模式控件')
+    return { foreground: style.color, border: style.borderTopColor, secondary: getComputedStyle(select).color }
+  })
+  expect(colors.border).toBe(colors.foreground)
+  expect(colors.secondary).toBe(colors.foreground)
+})
+
+test('手机产物视图通过会话导航返回任务', async ({ page }, testInfo) => {
+  test.skip(!testInfo.project.name.startsWith('mobile-'), '仅验证移动端视图切换')
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const draft = page.getByRole('textbox', { name: '任务描述' })
+  await draft.fill('保留正在编写的任务')
+  await page.getByRole('button', { name: '展开产物面板' }).click()
+  await page.getByRole('button', { name: '打开导航' }).click()
+  await page.getByRole('dialog').getByRole('link', { name: '新任务' }).click()
+  await expect(page.getByRole('dialog')).not.toBeVisible()
+  await expect(draft).toBeVisible()
+  await expect(draft).toHaveValue('保留正在编写的任务')
+  await expect(page.getByRole('complementary', { name: '产物审阅' })).not.toBeVisible()
 })

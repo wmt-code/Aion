@@ -139,7 +139,7 @@ button:disabled { cursor: not-allowed; }
   .mode-control select { min-height: 44px; }
 }
 @media (prefers-contrast: more) {
-  .app-shell { --muted-foreground: var(--foreground); --border: var(--foreground); }
+  .app-shell[data-theme] { --muted-foreground: var(--foreground); --border: var(--foreground); }
 }
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; animation: none !important; }
