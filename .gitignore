@@ -1,3 +1,5 @@
+/target/
+*.iml
 .claude/worktrees/
 .idea/
 node_modules/

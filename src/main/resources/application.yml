@@ -1,0 +1,61 @@
+spring:
+  application:
+    name: aion
+  profiles:
+    default: api
+  datasource:
+    url: ${AION_DATABASE_URL:jdbc:postgresql://localhost:5432/aion}
+    username: ${AION_DATABASE_USERNAME:aion}
+    password: ${AION_DATABASE_PASSWORD}
+    hikari:
+      maximum-pool-size: 10
+      connection-timeout: 5000
+      data-source-properties:
+        connectTimeout: 5
+        socketTimeout: 30
+  flyway:
+    default-schema: aion
+    locations: classpath:db/migration
+    clean-disabled: true
+  data:
+    redis:
+      host: ${AION_REDIS_HOST:localhost}
+      port: ${AION_REDIS_PORT:6379}
+      password: ${AION_REDIS_PASSWORD:}
+      connect-timeout: 2s
+      timeout: 2s
+  lifecycle:
+    timeout-per-shutdown-phase: 30s
+
+server:
+  port: ${PORT:8080}
+  shutdown: graceful
+  error:
+    include-message: never
+    include-stacktrace: never
+    include-binding-errors: never
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: health
+  endpoint:
+    health:
+      show-details: never
+      probes:
+        enabled: true
+      group:
+        liveness:
+          include: livenessState
+        readiness:
+          include: readinessState,db
+
+---
+spring:
+  config:
+    activate:
+      on-profile: worker
+  main:
+    web-application-type: none
+    keep-alive: true
