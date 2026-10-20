@@ -26,14 +26,15 @@ spring:
       timeout: 2s
   lifecycle:
     timeout-per-shutdown-phase: 30s
+  web:
+    error:
+      include-message: never
+      include-stacktrace: never
+      include-binding-errors: never
 
 server:
   port: ${PORT:8080}
   shutdown: graceful
-  error:
-    include-message: never
-    include-stacktrace: never
-    include-binding-errors: never
 
 management:
   endpoints:
