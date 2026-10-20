@@ -1,0 +1,24 @@
+{
+  "hooks": {
+    "PostToolUse": [
+      {
+        "matcher": "Write|Edit",
+        "hooks": [
+          {
+            "type": "mcp_tool",
+            "server": "idea",
+            "tool": "get_file_problems",
+            "input": {
+              "projectPath": "${cwd}",
+              "filePath": "${tool_input.file_path}",
+              "errorsOnly": false,
+              "timeout": 20000
+            },
+            "timeout": 30,
+            "statusMessage": "使用 IDEA 检查修改文件的错误与警告"
+          }
+        ]
+      }
+    ]
+  }
+}
